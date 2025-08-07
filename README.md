@@ -1,4 +1,4 @@
-# ESPHome / HomeAssistant Samsung Heat Pump Integration
+# ESPHome / HomeA ssistant Samsung Heat Pump Integration
 
 This component enables Samsung Heat Pumps to be integrated into ESPHome and Home Assistant. It supports NASA heat pumps that utilize the MIM-E03CN / MIM-E03DN & MIM-E03EN control boards (e.g., Samsung Gen 6 heat pump etc). Older non-NASA systems are not supported. 
 
