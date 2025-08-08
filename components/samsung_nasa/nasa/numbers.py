@@ -323,12 +323,6 @@ numbers = {
             "return (x / 10);"
         )
     },
-    0x4201: {
-        NASA_LABEL: "VAR_IN_TEMP_TARGET_F",
-        NASA_MODE: CONTROLLER_MODE_CONTROL,
-        CONF_DATA: cmd_numeric_data(16, 30, 0.5),
-        CONF_DEFAULTS: temperature_defaults()
-    },
      0x42CE: {
         NASA_LABEL: "VAR_IN_FSV_3046",
         NASA_MODE: CONTROLLER_MODE_FSV,

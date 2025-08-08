@@ -10,7 +10,7 @@ Most of the useful controls for DHW (domestic hot water), and heating (single an
 
 All commands, and FSVs are implemented as standard ESPHome components (e.g., lists, numbers, selects, switches, sensors). Check out the [example.yaml](example.yaml).
 
-## Basic Controller, NASA Client & Device Configuration
+## Basic Controller, NASA Client & Device Configuration  
 
 ```yaml
 samsung_nasa:
@@ -26,7 +26,7 @@ samsung_nasa:
 
 20.00.00 would normally be the address of the indoor unit; 10.00.00 would be the address of the outdoor unit (heat pump). It's best to leave the nasa_client options empty (at their defaults) as the client has been tested with these default values. You will need to provide an id for each device so you can associate each device with an ESPHome component.
 
-## Advanced Controller, NASA Client & Device Configuration
+## Advanced Controller, NASA Client & Device Configuration  
 
 ```yaml
 samsung_nasa:
@@ -51,7 +51,7 @@ The nasa_client configuration options are to do with ensuring NASA message deliv
  - **min_retries**: The minimum number of retries, even beyond timeout. 
  - **send_timeout**: The maximum time to wait before discarding commands.  
 
-## Number
+## Number  
 
 Comamnds and FSVs are implemented as number components when they represent a range of values such as temperature, duration etc. For commands use the message option with the NASA hex code; for FSVs use the fsv field:
 
@@ -71,7 +71,28 @@ number:
     id: fsv_2011
 ```
 
-These are the only fields you need to provide. All other fields such as unit of measure, decimal accuracy etc are automatically configured based on the message or fsv value. Number components are read/write so in the examples above the target temperature can be read and modified; likewise the FSV (Water Law (Outdoor Temp) High) can be modified and the new value sent to the heat pump. Caution needs to be exercised with FSVs. While care has been taken to limit the values to those that are appropriate for the given FSV, there can be minor differences between control boards and permitted min/max values.  
+These are the only fields you need to provide. All other fields such as unit of measure, decimal accuracy etc are automatically configured based on the message or fsv value. Number components are read/write so in the examples above the target temperature can be read and modified; likewise the FSV (Water Law (Outdoor Temp) High) can be modified and the new value sent to the heat pump. Caution needs to be exercised with FSVs. While care has been taken to limit the values to those that are appropriate for the given FSV, there can be minor differences between control boards and permitted min/max values.
+
+### Commands  
+
+| NASA Code | NASA Label                        | Description                            |
+|-----------|-----------------------------------|--------------------------------------- |
+| 0x4201    | VAR_IN_TEMP_TARGET_F              | (Zone 1) Target Tempearature           |
+| 0x4206    | VAR_IN_TEMP_TARGET_ZONE2_F        | (Zone 2) Target Temperature            |
+| 0x4235    | VAR_IN_TEMP_WATER_HEATER_TARGET_F | DHW Target Temperature                 |
+| 0x4247    | VAR_IN_TEMP_WATER_OUTLET_TARGET_F | Water Outlet Target Temperature.       |
+
+### FSVs  
+
+Refer to p.24 onwards of the [MIM-E03EN user manual PDF](MIM-E03EN.pdf).
+
+1011, 1012, 1021, 1022, 1031, 1032, 1041, 1042, 1051, 1052, 2011, 2012, 2021, 2022, 2031, 
+2032, 2051, 2052, 2061, 2062, 2071, 2072, 3021, 3022, 3023, 3024, 3025, 3026, 3032, 3033,
+3043, 3044, 3045, 3052, 3046, 3081, 3082, 3083, 4012, 4013, 4024, 4025, 4033, 4042, 4043, 
+4044, 4045, 4046, 4052, 4053, 5011, 5013, 5014, 5015, 5016, 5017, 5018, 5019, 5021, 5023,
+5082, 5083, 5092, 5093
+
+
 
 You can find a list of supported commands and FSVs in the [python configuration file for number components.](/components/samsung_nasa/nasa/numbers.py)
 
@@ -95,7 +116,7 @@ numbers = {
 
 ```
 
-## Select
+## Select  
 
 ```yaml
 select:
@@ -126,7 +147,23 @@ So for example message 0x4066 (hot water mode):
 }
 ```
 
-## Switch
+### Commands  
+
+| NASA Code | NASA Label                        | Description                            |
+|-----------|-----------------------------------|--------------------------------------- |
+| 0x4001    | ENUM_IN_OPERATION_MODE            | Operation mode (eg. Auto, Heat, Cool)  |
+| 0x4066    | ENUM_IN_WATER_HEATER_MODE         | DHW mode (eco, standard, power, force) |
+| 0x4235    | VAR_IN_TEMP_WATER_HEATER_TARGET_F | DHW Target Temperature                 |
+
+### FSVs  
+
+Refer to p.24 onwards of the [MIM-E03EN user manual PDF](MIM-E03EN.pdf).
+
+2041, 2081, 2091, 2092, 2093, 3011, 3042, 3061, 3071, 4011, 4021, 4022, 4041, 4051, 4052, 4053
+
+
+
+## Switch  
 
 Binary type NASA commands and FSV values (such as ON/OFF, YES/NO, ENABLED/DISABLED) are represented as switches. Like Number and Select componentes, they are read/write.
 
@@ -165,7 +202,23 @@ switches = {
 }
 ```
 
-## Sensor
+### Commands  
+
+| NASA Code | NASA Label                          | Description                            |
+|-----------|-------------------------------------|--------------------------------------- |
+| 0x4065    | ENUM_IN_WATER_HEATER_POWER          | DHW On/Off control                     |
+| 0x4000    | ENUM_IN_OPERATION_POWER             | Zone 1 heating On/Off control          |
+| 0x411E    | ENUM_IN_OPERATION_POWER_ZONE2.      | Zone 2 heating On/Off control          |
+| 0x4111    | ENUM_IN_OPERATION_AUTOMATIC_CLEANING| Turn on/off automatic cleaning         |
+
+### FSVs  
+
+Refer to p.24 onwards of the [MIM-E03EN user manual PDF](MIM-E03EN.pdf).
+
+3031, 3041, 3051, 4023, 4031, 4032, 4061, 5022, 5041, 5051, 5081, 5091, 5094  
+
+
+## Sensor   
 
 Sensor components are read-only. They report real-time data such as room temperature, energy consumption/production and valve/pump status.
 
@@ -190,6 +243,26 @@ Here is the python entry that configures the above sensor:
     CONF_DEFAULTS: temp_sensor_defaults()
 },
 ```
+
+| NASA Code | NASA Label                        | Description                            |
+|-----------|-----------------------------------|--------------------------------------- |
+| 0x24FC    | LVAR_NM_OUT_SENSOR_VOLTAGE        | Heat pump voltage                      |
+| 0x4038    | ENUM_IN_STATE_HUMIDITY_PERCENT    | Only available with A/C units          |
+| 0x4067    | ENUM_IN_3WAY_VALVE                | DHW Valve (0=heat, 1=tank)             |
+| 0x4069    | ENUM_IN_THERMOSTAT1               | Zone 1 input signal from external stat |
+| 0x406A    | ENUM_IN_THERMOSTAT2               | Zone 2 input signal from external stat |
+| 0x4089    | ENUM_IN_STATE_WATER_PUMP          | Primary water pump status              |
+| 0x408A    | ENUM_IN_2WAY_VALVE                | Zone control valve status              |
+| 0x4237    | VAR_IN_TEMP_WATER_TANK_F          | DHW tank temperature                   |
+| 0x4238    | VAR_IN_TEMP_WATER_OUT_F           | Water Outlet temperature               |
+| 0x4203    | VAR_IN_TEMP_ROOM_F                | Zone 1 room temperature                |
+| 0x4204    | VAR_IN_TEMP_ZONE2_F               | Zone 2 room temperature                |
+| 0x4427    | LVAR_IN_4427                      | Heat pump produced energy Kwh          |
+| 0x8204    | VAR_OUT_SENSOR_AIROUT             | Outdoor temperature                    |
+| 0x8217    | VAR_OUT_SENSOR_CT1                | Outdoor Current (Amps)                 |
+| 0x8235    | VAR_OUT_ERROR_CODE                | Error code (0 = OK)                    |
+| 0x8413    | LVAR_OUT_CONTROL_WATTMETER_1W_1MIN_SUM | Heat pump instantaneous power     |
+| 0x8414    | LVAR_OUT_CONTROL_WATTMETER_ALL_UNIT_ACCUM | Heat pump cumulative energy    |
 
 ## Automation and FSVs
 
@@ -321,4 +394,4 @@ select:
 
 An example heat pump dashboard in Home Assistant using this component and the example.yaml.
 
-<img src="samsung_nasa.png" width="80%"/>
+<img src="samsung_nasa.png" width="100%"/>
