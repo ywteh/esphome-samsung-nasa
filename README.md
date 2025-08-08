@@ -53,7 +53,7 @@ The nasa_client configuration options are to do with ensuring NASA message deliv
 
 ## Number  
 
-Comamnds and FSVs are implemented as number components when they represent a range of values such as temperature, duration etc. For commands use the message option with the NASA hex code; for FSVs use the fsv field:
+Commands and FSVs are implemented as number components when they represent a range of values such as temperature, duration etc. For commands use the message option with the NASA hex code; for FSVs use the fsv field:
 
 ```yaml
 number:
