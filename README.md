@@ -341,7 +341,7 @@ sensor:
     id: hot_water_current_temp
 ```
 
-Likewise, target temperature can be bound to a number components for reading/modifying the desired temperature:
+Likewise, target temperature can be bound to a number component for reading/modifying the desired temperature:
 
 ```yaml
 number:
@@ -352,7 +352,7 @@ number:
     nasa_device_id: nasa_device_1
     id: hot_water_target_temp
 ```
-If you are feeling very adventurous you can even have the climate component report current action of the heat pump (idle, heating, off etc) by binding the action_mode_sensor field to the appropriate pump or valve. In the above example NASA code 0x4067 is the code for reporting the DHW valve status (0 = room; 1 = hot water tank). When this sensor reports a value of 1 the heat pump is actively heating the hot water tank.
+If you are feeling adventurous you can even have the climate component report current action of the heat pump (idle, heating, off etc) by binding the action_mode_sensor field to the appropriate pump or valve. In the above example NASA code 0x4067 is the code for reporting the DHW valve status (0 = room; 1 = hot water tank). When this sensor reports a value of 1 the heat pump is actively heating the hot water tank.
 
 ```yaml
 sensor:
@@ -395,3 +395,12 @@ select:
 An example heat pump dashboard in Home Assistant using this component and the example.yaml.
 
 <img src="samsung_nasa.png" width="100%"/>
+
+## Implementation Details
+
+On startup the NASA Controller issues a read request for all configured samsung_nasa platform components. These are batched into groups of up to 10 messages and dispatched with a small time delay between each read request. The heat pump responds with a value for each NASA message so all samsung_nasa components should have an initial up-to-date value (including FSVs).
+
+When a command is issued and successfully actioned by the heat pump, the heat pump responds with an ACK message. A read request is then issued to confirm the new value and this is reported back to the samsung_nasa platform components. Components therefore do not require optimistic: true to be set as feedback from the NASA Controller component updates the state of the component soon after the command has been issued.
+
+A batched dispatcher is used for outgoing read requests - this automatically combines up to 10 read requests into a single payload and these batches are issued with a small delay betweeen each dispatch as a means of congestion control. There is also an outgoing queue which writes to the bus when the bus is "quiet" i.e. not currently receiving data. These two approaches combined together should hopefully minimise traffic and help reduce collisions.
+
