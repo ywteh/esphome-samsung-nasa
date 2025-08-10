@@ -9,28 +9,28 @@ namespace samsung_nasa {
 
 template<typename T> class LimitedQueue {
  public:
-  explicit LimitedQueue(size_t limit) : max_size_(limit) {}
+  explicit LimitedQueue(const size_t limit) : max_size_(limit) {}
   void push(const T &value) {
-    if (q.size() >= max_size_)
+    if (this->queue_.size() >= this->max_size_)
       return;
-    q.push(value);
+    queue_.push(value);
   }
-  T &front() { return q.front(); }
-  const T &front() const { return q.front(); }
-  T &back() { return q.back(); }
-  const T &back() const { return q.back(); }
-  void pop() { q.pop(); }
-  bool empty() const { return q.empty(); }
-  size_t size() const { return q.size(); }
+  T &front() { return this->queue_.front(); }
+  const T &front() const { return this->queue_.front(); }
+  T &back() { return this->queue_.back(); }
+  const T &back() const { return this->queue_.back(); }
+  void pop() { this->queue_.pop(); }
+  bool empty() const { return this->queue_.empty(); }
+  const size_t size() const { return this->queue_.size(); }
 
  protected:
-  std::queue<T> q;
+  std::queue<T> queue_;
   const size_t max_size_;
 };
 
 template<typename T> class BatchDispatcher {
  public:
-  BatchDispatcher(size_t limit, size_t batch, size_t delay)
+  BatchDispatcher(const size_t limit, const size_t batch, const size_t delay)
       : batch_size_{batch}, delay_{delay}, limited_queue_{limit} {}
   using RegisterReceiveFunc = std::function<void(std::vector<T>)>;
   void register_receive_callback(RegisterReceiveFunc rrf) { this->receiveFunc_ = rrf; }

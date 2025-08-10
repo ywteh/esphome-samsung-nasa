@@ -5,7 +5,7 @@
 namespace esphome {
 namespace samsung_nasa {
 
-static int _packetCounter = 0;
+
 
 Packet Packet::create_partial(Address da, DataType dataType) {
   Packet packet;
@@ -14,8 +14,14 @@ Packet Packet::create_partial(Address da, DataType dataType) {
   packet.command.packetInformation = true;
   packet.command.packetType = PacketType::Normal;
   packet.command.dataType = dataType;
-  packet.command.packetNumber = _packetCounter++;
+  packet.command.packetNumber = Packet::get_packet_number();
   return packet;
+}
+
+int Packet::packet_counter_ = 0;
+
+int Packet::get_packet_number() {
+    return ++packet_counter_;
 }
 
 DecodeResult Packet::decode(std::vector<uint8_t> &data) {

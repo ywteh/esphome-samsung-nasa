@@ -22,6 +22,9 @@ struct Packet {
   std::vector<uint8_t> encode();
   std::vector<std::string> to_string(std::optional<std::string> prefix);
   void log_multiline(std::optional<std::string> prefix, log_lines_t func);
+ private:
+  static int get_packet_number();
+  static int packet_counter_;
 };
 
 struct PacketInfo {

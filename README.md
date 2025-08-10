@@ -37,6 +37,7 @@ samsung_nasa:
     retry_interval: 500
     min_retries: 1
     send_timeout: 1000
+    flow_control_pin: GPIOXX
   devices:
    - address: 20.00.00
      id: nasa_device_1
@@ -46,10 +47,11 @@ samsung_nasa:
 
 The nasa_client configuration options are to do with ensuring NASA message delivery via a retry mechansim. Thanks and acknowledgment go to atanasenko for the [retry mechanism.](https://github.com/omerfaruk-aran/esphome_samsung_hvac_bus/commit/1030af3bcc4f3dc688be643e0c2ae65b6401fcc5)
 
- - **silence_interval**: The time to wait since the last wire activity before sending. 
- - **retry_interval**: The minimum time before a retry attempt.  
- - **min_retries**: The minimum number of retries, even beyond timeout. 
- - **send_timeout**: The maximum time to wait before discarding commands.  
+ - **silence_interval**: (Optional) The time to wait since the last wire activity before sending. 
+ - **retry_interval**: (Optional) The minimum time before a retry attempt.  
+ - **min_retries**: (Optional) The minimum number of retries, even beyond timeout. 
+ - **send_timeout**: (Optional) The maximum time to wait before discarding commands.  
+ - **flow_control_pin**: (Optional) The pin used to switch flow control. This is useful for RS485 transceivers that do not have automatic flow control switching, like the common MAX485.
 
 ## Number  
 

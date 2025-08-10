@@ -14,13 +14,13 @@ namespace samsung_nasa {
 
 class NASA_Device {
  public:
-  NASA_Device(std::string address, uint8_t address_class) : address_{address}, address_class_{address_class} {};
-  auto get_address() { return this->address_; };
-  auto get_address_class() { return this->address_class_; };
+  NASA_Device(const std::string address, const uint8_t address_class) : address_{address}, address_class_{address_class} {};
+  auto get_address() const { return this->address_; };
+  auto get_address_class() const { return this->address_class_; };
 
  protected:
-  std::string address_;         // E.g. "20.00.00"
-  AddressClass address_class_;  // E.g. 0x20
+  const std::string address_;         // E.g. "20.00.00"
+  const AddressClass address_class_;  // E.g. 0x20
 };
 
 class NASA_Controller : public PollingComponent {

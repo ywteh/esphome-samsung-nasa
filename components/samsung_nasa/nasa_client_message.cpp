@@ -73,13 +73,13 @@ void MessageSet::encode(std::vector<uint8_t> &data) {
 std::string MessageSet::to_string() {
   switch (type) {
     case Enum:
-      return "Enum " + format_hex_pretty(messageNumber) + " = " + std::to_string(value);
+      return "Enum " + format_hex_pretty(messageNumber, '\0', false) + " = " + std::to_string(value);
     case Variable:
-      return "Variable " + format_hex_pretty(messageNumber) + " = " + std::to_string(value);
+      return "Variable " + format_hex_pretty(messageNumber, '\0', false) + " = " + std::to_string(value);
     case LongVariable:
-      return "LongVariable " + format_hex_pretty(messageNumber) + " = " + std::to_string(value);
+      return "LongVariable " + format_hex_pretty(messageNumber, '\0', false) + " = " + std::to_string(value);
     case Structure:
-      return "Structure " + format_hex_pretty(messageNumber) + " = " + std::to_string(structure.size);
+      return "Structure " + format_hex_pretty(messageNumber, '\0', false) + " = " + std::to_string(structure.size);
     default:
       return "Unknown";
   }
