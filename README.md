@@ -6,9 +6,9 @@ The project requires a suitable RS485 Modbus enabled board such as the M5Stack A
 
 This project borrows from the excellent work done by the team supporting the ESPHome Samsung HVAC Integration (https://github.com/omerfaruk-aran/esphome_samsung_hvac_bus/). The project includes detailed [hardware installation instructions](https://github.com/omerfaruk-aran/esphome_samsung_hvac_bus/wiki/Hardware-Installation) on the installation process so I won't repeat them here.
 
-Most of the useful controls for DHW (domestic hot water), and heating (single and 2-zone) are supported by this component - along with the ability to read and write FSVs (Field Setting Values). The project has been re-engineered to abstract away the NASA message codes from the C++ code so it should be much easier to add missing controls to the Python lists of ESPHome components (lists, numbers, selects, sensors etc). This should make it much easier to submit PRs for missing NASA messages.
+Most of the useful controls for DHW (domestic hot water), and heating (single and 2-zone) are supported by this component - along with the ability to read and write FSVs (Field Setting Values). The project has been re-engineered to abstract away the NASA message codes from the C++ code so it should be much easier to add missing controls to the Python lists of ESPHome components (numbers, selects, switches, sensors etc). This should make it much easier to submit PRs for missing NASA messages.
 
-All commands, and FSVs are implemented as standard ESPHome components (e.g., lists, numbers, selects, switches, sensors). Check out the [example.yaml](example.yaml).
+All commands, and FSVs are implemented as standard ESPHome components (e.g., numbers, selects, switches...). Check out the [example.yaml](example.yaml).
 
 ## Basic Controller, NASA Client & Device Configuration  
 
@@ -75,7 +75,7 @@ number:
 
 These are the only fields you need to provide. All other fields such as unit of measure, decimal accuracy etc are automatically configured based on the message or fsv value. Number components are read/write so in the examples above the target temperature can be read and modified; likewise the FSV (Water Law (Outdoor Temp) High) can be modified and the new value sent to the heat pump. Caution needs to be exercised with FSVs. While care has been taken to limit the values to those that are appropriate for the given FSV, there can be minor differences between control boards and permitted min/max values.
 
-### Commands  
+### Supported Commands  
 
 | NASA Code | NASA Label                        | Description                            |
 |-----------|-----------------------------------|--------------------------------------- |
@@ -84,7 +84,7 @@ These are the only fields you need to provide. All other fields such as unit of 
 | 0x4235    | VAR_IN_TEMP_WATER_HEATER_TARGET_F | DHW Target Temperature                 |
 | 0x4247    | VAR_IN_TEMP_WATER_OUTLET_TARGET_F | Water Outlet Target Temperature.       |
 
-### FSVs  
+### Supported FSVs  
 
 Refer to p.24 onwards of the [MIM-E03EN user manual PDF](MIM-E03EN.pdf).
 
@@ -93,7 +93,6 @@ Refer to p.24 onwards of the [MIM-E03EN user manual PDF](MIM-E03EN.pdf).
 3043, 3044, 3045, 3052, 3046, 3081, 3082, 3083, 4012, 4013, 4024, 4025, 4033, 4042, 4043, 
 4044, 4045, 4046, 4052, 4053, 5011, 5013, 5014, 5015, 5016, 5017, 5018, 5019, 5021, 5023,
 5082, 5083, 5092, 5093
-
 
 
 You can find a list of supported commands and FSVs in the [python configuration file for number components.](/components/samsung_nasa/nasa/numbers.py)
@@ -149,7 +148,7 @@ So for example message 0x4066 (hot water mode):
 }
 ```
 
-### Commands  
+### Supported Commands  
 
 | NASA Code | NASA Label                        | Description                            |
 |-----------|-----------------------------------|--------------------------------------- |
@@ -157,7 +156,7 @@ So for example message 0x4066 (hot water mode):
 | 0x4066    | ENUM_IN_WATER_HEATER_MODE         | DHW mode (eco, standard, power, force) |
 | 0x4235    | VAR_IN_TEMP_WATER_HEATER_TARGET_F | DHW Target Temperature                 |
 
-### FSVs  
+### Supported FSVs  
 
 Refer to p.24 onwards of the [MIM-E03EN user manual PDF](MIM-E03EN.pdf).
 
@@ -204,7 +203,7 @@ switches = {
 }
 ```
 
-### Commands  
+### Supported Commands  
 
 | NASA Code | NASA Label                          | Description                            |
 |-----------|-------------------------------------|--------------------------------------- |
@@ -213,7 +212,7 @@ switches = {
 | 0x411E    | ENUM_IN_OPERATION_POWER_ZONE2.      | Zone 2 heating On/Off control          |
 | 0x4111    | ENUM_IN_OPERATION_AUTOMATIC_CLEANING| Turn on/off automatic cleaning         |
 
-### FSVs  
+### Supported FSVs  
 
 Refer to p.24 onwards of the [MIM-E03EN user manual PDF](MIM-E03EN.pdf).
 
