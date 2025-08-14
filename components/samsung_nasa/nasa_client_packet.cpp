@@ -86,7 +86,7 @@ std::vector<uint8_t> Packet::encode() {
   return data;
 }
 
-std::vector<std::string> Packet::to_string(std::optional<std::string> prefix) {
+std::vector<std::string> Packet::to_string(optional<std::string> prefix) {
   std::vector<std::string> lines;
   std::string line = prefix ? *prefix + " " : "";
   line += "#Packet Src:" + sa.to_string() + " Dst:" + da.to_string() + " " + command.to_string();
@@ -97,7 +97,7 @@ std::vector<std::string> Packet::to_string(std::optional<std::string> prefix) {
   return lines;
 }
 
-void Packet::log_multiline(std::optional<std::string> prefix, log_lines_t func) {
+void Packet::log_multiline(optional<std::string> prefix, log_lines_t func) {
   for (const auto &line : this->to_string(prefix)) {
     func(TAG, line.c_str());
   }

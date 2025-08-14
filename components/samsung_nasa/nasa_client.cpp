@@ -146,14 +146,14 @@ void NASA_Client::process_nasa_packet() {
   // Invoke the address callback
   this->addressFunc_(source);
   if (debug_log_undefined_messages) {
-    this->packet_.log_multiline("Message", log_lines_func);
+    this->packet_.log_multiline(std::string("Message"), log_lines_func);
   }
   switch (this->packet_.command.dataType) {
     case DataType::Undefined: {
       return;
     }
     case DataType::Ack: {
-      this->packet_.log_multiline("Ack", log_lines_func);
+      this->packet_.log_multiline(std::string("Ack"), log_lines_func);
       if (dest == me) {
         this->ack_data(this->packet_.command.packetNumber);
         ESP_LOGW(TAG, "Internal request (packet id %d) acknowledged", this->packet_.command.packetNumber);
@@ -163,11 +163,11 @@ void NASA_Client::process_nasa_packet() {
       return;
     }
     case DataType::Request: {
-      this->packet_.log_multiline("Request", log_lines_func);
+      this->packet_.log_multiline(std::string("Request"), log_lines_func);
       return;
     }
     case DataType::Response: {
-      this->packet_.log_multiline("Response", log_lines_func);
+      this->packet_.log_multiline(std::string("Response"), log_lines_func);
       // Response type has no ACK so log it and call ack_data to remove from outgoing queue
       if (dest == me) {
         this->ack_data(this->packet_.command.packetNumber);
@@ -177,15 +177,15 @@ void NASA_Client::process_nasa_packet() {
       }
     }
     case DataType::Write: {
-      this->packet_.log_multiline("Write", log_lines_func);
+      this->packet_.log_multiline(std::string("Write"), log_lines_func);
       return;
     }
     case DataType::Nack: {
-      this->packet_.log_multiline("Nack", log_lines_func);
+      this->packet_.log_multiline(std::string("Nack"), log_lines_func);
       return;
     }
     case DataType::Read: {
-      this->packet_.log_multiline("Read", log_lines_func);
+      this->packet_.log_multiline(std::string("Read"), log_lines_func);
       return;
     }
     case DataType::Notification: {
@@ -220,7 +220,7 @@ void NASA_Client::publish_from_queue(std::vector<uint16_t> &messages) {
   }
   if (packet.messages.size() == 0)
     return;
-  packet.log_multiline("Read", log_lines_func);
+  packet.log_multiline(std::string("Read"), log_lines_func);
   this->publish_data(packet.command.packetNumber, packet.encode());
 }
 
@@ -231,7 +231,7 @@ void NASA_Client::publish_request(const std::string &address, uint16_t message, 
   packet.messages.push_back(message_set);
   if (packet.messages.size() == 0)
     return;
-  packet.log_multiline("Request", log_lines_func);
+  packet.log_multiline(std::string("Request"), log_lines_func);
   this->publish_data(packet.command.packetNumber, packet.encode());
   // Issue a read to confirm command was successful
   this->dispatcher_.push(message);

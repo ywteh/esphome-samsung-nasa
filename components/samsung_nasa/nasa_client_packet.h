@@ -6,7 +6,7 @@
 #include "nasa_client_command.h"
 #include "nasa_client_message.h"
 #include "nasa_address.h"
-#include <optional>
+#include "esphome/core/optional.h"
 
 namespace esphome {
 namespace samsung_nasa {
@@ -20,8 +20,8 @@ struct Packet {
   static Packet create_partial(Address da, DataType dataType);
   DecodeResult decode(std::vector<uint8_t> &data);
   std::vector<uint8_t> encode();
-  std::vector<std::string> to_string(std::optional<std::string> prefix);
-  void log_multiline(std::optional<std::string> prefix, log_lines_t func);
+  std::vector<std::string> to_string(optional<std::string> prefix);
+  void log_multiline(optional<std::string> prefix, log_lines_t func);
  private:
   static int get_packet_number();
   static int packet_counter_;
