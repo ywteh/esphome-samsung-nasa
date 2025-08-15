@@ -4,6 +4,7 @@
 #include "nasa.h"
 #include "nasa_base.h"
 #include "nasa_client.h"
+#include "nasa_device.h"
 #include <map>
 #include <set>
 #include <vector>
@@ -11,24 +12,12 @@
 namespace esphome {
 namespace samsung_nasa {
 
-
-class NASA_Device {
- public:
-  NASA_Device(const std::string address, const uint8_t address_class) : address_{address}, address_class_{address_class} {};
-  auto get_address() const { return this->address_; };
-  auto get_address_class() const { return this->address_class_; };
-
- protected:
-  const std::string address_;         // E.g. "20.00.00"
-  const AddressClass address_class_;  // E.g. 0x20
-};
-
 class NASA_Controller : public PollingComponent {
  public:
   NASA_Controller(NASA_Client *nasa_client) : nasa_client_{nasa_client} {};
   void setup() override;
   void update() override;
-  void write(const std::string address, uint16_t number, long value);
+  void write(const std::string &address, const uint16_t &number, long value);
   void read(const std::vector<uint16_t> &numbers);
   void register_device(NASA_Device *device);
   void register_component(NASA_Base *component);

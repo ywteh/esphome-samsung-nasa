@@ -14,7 +14,7 @@ void NASA_Switch::on_receive(long value) {
 }
 
 void NASA_Switch::write(long value) {
-  this->controller_->write(this->get_device()->get_address(), this->get_message(), value);
+  this->controller_->write(this->get_address(), this->get_message(), value);
 }
 
 void NASA_Switch::set_lambdas(lambda_from lamda_from, lambda_to lambda_to) {

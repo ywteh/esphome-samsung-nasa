@@ -17,20 +17,20 @@ void NASA_Controller::setup() {
     auto result = false;
     auto it = this->components_.find(message.messageNumber);
     if (it != this->components_.end()) {
-        auto components = it->second;
-        for (auto const &component: components) {
-            auto device_address = component->get_device()->get_address();
-            if ( source_address == device_address) {
-                component->on_receive(message.value);
-                result = true;
-            }
+      auto components = it->second;
+      for (auto const &component : components) {
+        auto device_address = component->get_address();
+        if (source_address == device_address) {
+          component->on_receive(message.value);
+          result = true;
         }
+      }
     }
     return result;
   });
   // Do an initial read request for all registered components
   std::vector<uint16_t> numbers;
-  for (auto const& pair : this->components_) {
+  for (auto const &pair : this->components_) {
     numbers.push_back(pair.first);
   }
   this->read(numbers);
@@ -47,11 +47,9 @@ void NASA_Controller::register_component(NASA_Base *component) {
   }
 }
 
-void NASA_Controller::read(const std::vector<uint16_t> &numbers) {
-    this->nasa_client_->publish_read(numbers);
-}
+void NASA_Controller::read(const std::vector<uint16_t> &numbers) { this->nasa_client_->publish_read(numbers); }
 
-void NASA_Controller::write(const std::string address, uint16_t number, long value) {
+void NASA_Controller::write(const std::string &address, const uint16_t &number, long value) {
   this->nasa_client_->publish_request(address, number, value);
 }
 
@@ -79,5 +77,5 @@ void NASA_Controller::update() {
   }
 }
 
-}  // namespace  samsung_nasa
+}  // namespace samsung_nasa
 }  // namespace esphome
