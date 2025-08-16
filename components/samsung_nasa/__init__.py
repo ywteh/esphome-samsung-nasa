@@ -17,8 +17,9 @@ from .nasa.const import (
 from .nasa.nasa import (
     samsung_nasa_ns, 
     controller_mode,
+    address_class,
     CONTROLLER_MODE_STATUS, 
-    ADDRESS_CLASSES,
+    ADDRESS_CLASS_LABELS,
     NASA_Base
 )
 
@@ -50,15 +51,15 @@ address_pattern = re.compile("([0-9a-f]{2})(?:\\.[0-9a-f]{2}){2}", re.IGNORECASE
 def device_validator(config):
     if (m := address_pattern.match(config[NASA_DEVICE_ADDRESS])) is not None:
         group = m.group(1)
-        address_class = cv.hex_int(int(group,16))
-        address_label = ADDRESS_CLASSES.get(
-            cv.hex_int(int(group,16)),
-            ADDRESS_CLASSES[ADDRESS_CLASS_UNDEFINED])
-        config[NASA_DEVICE_CLASS] = address_class
+        address_class_hex = cv.hex_int(int(group,16))
+        address_label = ADDRESS_CLASS_LABELS.get(
+            address_class_hex,
+            ADDRESS_CLASS_LABELS[ADDRESS_CLASS_UNDEFINED])
+        config[NASA_DEVICE_CLASS] = address_class(address_class_hex)
         cv._LOGGER.log(
             cv.logging.INFO, 
             "Auto configured NASA device {} as {} unit ({})".format(
-                config[NASA_DEVICE_ADDRESS], address_label, address_class
+                config[NASA_DEVICE_ADDRESS], address_label, address_class_hex
             )
         )
     else:
@@ -72,7 +73,7 @@ device_schema = cv.All(
             cv.Required(NASA_DEVICE_ADDRESS):cv.string_strict
         }
     ),
-    device_validator,
+    device_validator
 )
 
 client_schema = cv.Schema(
