@@ -158,7 +158,6 @@ So for example message 0x4066 (hot water mode):
 |-----------|-----------------------------------|--------------------------------------- |
 | 0x4001    | ENUM_IN_OPERATION_MODE            | Operation mode (eg. Auto, Heat, Cool)  |
 | 0x4066    | ENUM_IN_WATER_HEATER_MODE         | DHW mode (eco, standard, power, force) |
-| 0x4235    | VAR_IN_TEMP_WATER_HEATER_TARGET_F | DHW Target Temperature                 |
 
 ### Supported FSVs  
 
