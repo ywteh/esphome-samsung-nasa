@@ -7,14 +7,14 @@
 namespace esphome {
 namespace samsung_nasa {
 
-class NASA_Switch : public switch_::Switch, public NASA_Base {
+class NASA_Switch : public switch_::Switch, public NASA_Write {
   using lambda_from = std::function<bool(int)>;
   using lambda_to = std::function<int(bool)>;
 
  public:
   inline NASA_Switch(const std::string label, const uint16_t message, const ControllerMode nasa_mode,
                      const NASA_Device *device)
-      : NASA_Base(label, message, nasa_mode, device) {};
+      : NASA_Write(label, message, nasa_mode, device) {};
   void on_receive(long value) override;
   void write(long value) override;
   void set_lambdas(lambda_from lamda_from, lambda_to lambda_to);

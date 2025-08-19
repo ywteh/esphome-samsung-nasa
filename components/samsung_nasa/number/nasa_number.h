@@ -7,14 +7,14 @@
 namespace esphome {
 namespace samsung_nasa {
 
-class NASA_Number : public number::Number, public NASA_Base {
+class NASA_Number : public number::Number, public NASA_Write {
   using lambda_from = std::function<float(float)>;
   using lambda_to = std::function<uint16_t(float)>;
 
  public:
   NASA_Number(const std::string label, const uint16_t message, const ControllerMode nasa_mode,
               const NASA_Device *device)
-      : NASA_Base(label, message, nasa_mode, device) {};
+      : NASA_Write(label, message, nasa_mode, device) {};
   void on_receive(long value) override;
   void write(long value) override;
   void set_lambdas(lambda_from lamda_from, lambda_to lambda_to);
