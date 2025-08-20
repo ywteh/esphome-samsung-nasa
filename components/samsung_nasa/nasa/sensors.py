@@ -7,6 +7,7 @@ from esphome.const import (
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_VOLTAGE,
     DEVICE_CLASS_CURRENT,
+    DEVICE_CLASS_VOLUME_FLOW_RATE,
     STATE_CLASS_TOTAL_INCREASING,
     STATE_CLASS_NONE,
     STATE_CLASS_MEASUREMENT,
@@ -39,6 +40,8 @@ from .const import *
 
 ICON_ALERT = "mdi:alert"
 ICON_HUMIDITY = "mdi:water-percent"
+ICON_FLOW = "mdi:water-circle"
+UNIT_LITRES_PER_MIN = "L/min"
 
 def sensor_defaults(
     unit_of_measurement = UNIT_EMPTY,
@@ -137,6 +140,18 @@ sensors = {
         NASA_MODE: CONTROLLER_MODE_STATUS,
         CONF_DEFAULTS: temp_sensor_defaults()
     },
+    0x42E9: {
+        NASA_LABEL: "VAR_IN_FLOW_SENSOR_CALC",
+        NASA_MODE: CONTROLLER_MODE_STATUS,
+        CONF_DEFAULTS: sensor_defaults(
+            unit_of_measurement=UNIT_LITRES_PER_MIN,
+            icon=ICON_FLOW,
+            accuracy_decimals=1,
+            device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
+            state_class=STATE_CLASS_MEASUREMENT,
+            filters=[{CONF_MULTIPLY: 0.1}]
+        )
+    },    
     0x4427: {
         NASA_LABEL: "LVAR_IN_4427",
         NASA_MODE: CONTROLLER_MODE_STATUS,

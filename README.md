@@ -159,6 +159,7 @@ So for example message 0x4066 (hot water mode):
 | 0x4001    | ENUM_IN_OPERATION_MODE            | Operation mode (eg. Auto, Heat, Cool)  |
 | 0x4066    | ENUM_IN_WATER_HEATER_MODE         | DHW mode (eco, standard, power, force) |
 | 0x4235    | VAR_IN_TEMP_WATER_HEATER_TARGET_F | DHW Target Temperature                 |
+| 0x406F    | ENUM_IN_REFERENCE_EHS_TEMP        | Temperature Reference (Room, Water Out)|
 
 ### Supported FSVs  
 
@@ -237,7 +238,7 @@ sensor:
     id: hot_water_current_temp
 ```
 
-In addition to a large selection of available sensors, it is also possible to specify your own NASA code should it not be listed in [sensors.py](/components/samsung_nasa/nasa/sensors.py). You will need to provide the appropriate unit of measure, device class, decimal accuracy and lambdas to transform the raw NASA value to something meaningful. Consult the [ESPHome documentation](https://esphome.io/components/sensor/) for how to configure a sensor component. As part of the samsung_nasa platform you will need to specify message, nasa_device_id and platform fields.
+In addition to a large selection of available sensors, it is also possible to specify your own NASA code should it not be listed in [sensors.py](/components/samsung_nasa/nasa/sensors.py). You will need to provide the appropriate unit of measure, device class, decimal accuracy and lambdas to transform the raw NASA value to something meaningful. Consult the [ESPHome documentation](https://esphome.io/components/sensor/) for how to configure a sensor component. As part of the samsung_nasa platform you will need to specify message, nasa_device_id, nasa_label, and platform fields.
 
 Here is the python entry that configures the above sensor:
 
@@ -262,12 +263,48 @@ Here is the python entry that configures the above sensor:
 | 0x4238    | VAR_IN_TEMP_WATER_OUT_F           | Water Outlet temperature               |
 | 0x4203    | VAR_IN_TEMP_ROOM_F                | Zone 1 room temperature                |
 | 0x4204    | VAR_IN_TEMP_ZONE2_F               | Zone 2 room temperature                |
+| 0x42E9    | VAR_IN_FLOW_SENSOR_CALC           | Flow rate sensor (l/min)               |
 | 0x4427    | LVAR_IN_4427                      | Heat pump produced energy Kwh          |
 | 0x8204    | VAR_OUT_SENSOR_AIROUT             | Outdoor temperature                    |
 | 0x8217    | VAR_OUT_SENSOR_CT1                | Outdoor Current (Amps)                 |
 | 0x8235    | VAR_OUT_ERROR_CODE                | Error code (0 = OK)                    |
 | 0x8413    | LVAR_OUT_CONTROL_WATTMETER_1W_1MIN_SUM | Heat pump instantaneous power     |
 | 0x8414    | LVAR_OUT_CONTROL_WATTMETER_ALL_UNIT_ACCUM | Heat pump cumulative energy    |
+
+Bear in mind that VAR_OUT type NASA Labels mean that you will need to assign the outdoor device to the component as it is the external heat pump unit that reports this data.
+
+## Binary Sensor
+
+Binary sensors are read-only. They report boolean type data such as Yes/No, On/Off values etc.
+
+| NASA Code | NASA Label                        | Description                            |
+|-----------|-----------------------------------|--------------------------------------- |
+| 0x4067    | ENUM_IN_3WAY_VALVE                | 3-Way Valve: 0 = Heating; 1 = Tank     |
+| 0x4087    | ENUM_IN_BOOSTER_HEATER            | Booster Heater: 0 = Off; 1 = On        |
+| 0x406C    | ENUM_IN_BACKUP_HEATER             | Backup Heater: 0 = Off; 1 = On         |
+| 0x8010    | ENUM_OUT_LOAD_COMP1               | Compressor Running: 0 = Off; 1 = On    |
+| 0x8017    | ENUM_OUT_LOAD_HOTGAS              | Hot Gas 1 Status: 0 = Off; 1 = On      |
+| 0x8019    | ENUM_OUT_LOAD_LIQUID              | Liquid Valve Status: 0 = Off; 1 = On   |
+| 0x8021    | ENUM_OUT_LOAD_EVI_BYPASS          | EVI Bypass: 0 = Off; 1 = On            |
+| 0x801A    | ENUM_OUT_LOAD_4WAY                | 4-Way Valve Status: 0 = Off; 1 = On    |
+| 0x80AF    | BASE_HEATER                       | Base Heater Status: 0 = Off; 1 = On    |
+| 0x80D7    | ENUM_OUT_LOAD_PHEHEATER           | PHE Heater Status: 0 = Off; 1 = On     |
+
+```yaml
+binary_sensor:
+  - platform: samsung_nasa
+    message: 0x4087
+    nasa_device_id: nasa_device_1
+    name: Booster Heater
+    id: booster_heater
+  - platform: samsung_nasa
+    message: 0x8010
+    nasa_device_id: nasa_device_2
+    name: Compressor Status
+    id: compressor_status 
+```
+
+Bear in mind that ENUM_OUT type NASA Labels mean that you will need to assign the outdoor device to the component. It is the outdoor (heat pump) unit that reports this data.
 
 ## Automation and FSVs
 

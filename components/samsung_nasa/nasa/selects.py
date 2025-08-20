@@ -46,6 +46,12 @@ selects = {
         CONF_DATA: cmd_select_data(["Economy", "Standard", "Power", "Force"]),
         CONF_DEFAULTS: select_defaults()
     },
+    0x406F: {
+        NASA_LABEL: "ENUM_IN_REFERENCE_EHS_TEMP",
+        NASA_MODE: CONTROLLER_MODE_CONTROL,
+        CONF_DATA: cmd_select_data(["Indoor Temp", "Water Out"]),
+        CONF_DEFAULTS: select_defaults()
+    },
     0x4093: {
         NASA_LABEL: "VAR_IN_FSV_2041",
         NASA_MODE: CONTROLLER_MODE_FSV,
