@@ -265,26 +265,28 @@ Here is the python entry that configures the above DHW Temperature sensor:
 },
 ```
 
-| NASA Code | NASA Label                        | Description                            |
-|-----------|-----------------------------------|--------------------------------------- |
-| 0x24FC    | LVAR_NM_OUT_SENSOR_VOLTAGE        | Heat pump voltage                      |
-| 0x4038    | ENUM_IN_STATE_HUMIDITY_PERCENT    | Only available with A/C units          |
-| 0x4067    | ENUM_IN_3WAY_VALVE                | DHW Valve (0=heat, 1=tank)             |
-| 0x4069    | ENUM_IN_THERMOSTAT1               | Zone 1 input signal from external stat |
-| 0x406A    | ENUM_IN_THERMOSTAT2               | Zone 2 input signal from external stat |
-| 0x4089    | ENUM_IN_STATE_WATER_PUMP          | Primary water pump status              |
-| 0x408A    | ENUM_IN_2WAY_VALVE                | Zone control valve status              |
-| 0x4237    | VAR_IN_TEMP_WATER_TANK_F          | DHW tank temperature                   |
-| 0x4238    | VAR_IN_TEMP_WATER_OUT_F           | Water Outlet temperature               |
-| 0x4203    | VAR_IN_TEMP_ROOM_F                | Zone 1 room temperature                |
-| 0x4204    | VAR_IN_TEMP_ZONE2_F               | Zone 2 room temperature                |
-| 0x42E9    | VAR_IN_FLOW_SENSOR_CALC           | Flow rate sensor (l/min)               |
-| 0x4427    | LVAR_IN_4427                      | Heat pump produced energy Kwh          |
-| 0x8204    | VAR_OUT_SENSOR_AIROUT             | Outdoor temperature                    |
-| 0x8217    | VAR_OUT_SENSOR_CT1                | Outdoor Current (Amps)                 |
-| 0x8235    | VAR_OUT_ERROR_CODE                | Error code (0 = OK)                    |
-| 0x8413    | LVAR_OUT_CONTROL_WATTMETER_1W_1MIN_SUM | Heat pump instantaneous power     |
-| 0x8414    | LVAR_OUT_CONTROL_WATTMETER_ALL_UNIT_ACCUM | Heat pump cumulative energy    |
+| NASA Code | NASA Label                                | Description                            |
+|-----------|-------------------------------------------|--------------------------------------- |
+| 0x24FC    | LVAR_NM_OUT_SENSOR_VOLTAGE                | Heat pump voltage                      |
+| 0x4038    | ENUM_IN_STATE_HUMIDITY_PERCENT            | Only available with A/C units          |
+| 0x4067    | ENUM_IN_3WAY_VALVE                        | DHW valve (0=heat, 1=tank)             |
+| 0x4069    | ENUM_IN_THERMOSTAT1                       | Zone 1 input signal from external stat |
+| 0x406A    | ENUM_IN_THERMOSTAT2                       | Zone 2 input signal from external stat |
+| 0x4089    | ENUM_IN_STATE_WATER_PUMP                  | Primary water pump status              |
+| 0x408A    | ENUM_IN_2WAY_VALVE                        | Zone control valve status              |
+| 0x4236    | VAR_IN_TEMP_WATER_IN_F                    | Flow return temperature                |
+| 0x4237    | VAR_IN_TEMP_WATER_TANK_F                  | DHW tank temperature                   |
+| 0x4238    | VAR_IN_TEMP_WATER_OUT_F                   | Flow temperature                       |
+| 0x4203    | VAR_IN_TEMP_ROOM_F                        | Zone 1 room temperature                |
+| 0x4204    | VAR_IN_TEMP_ZONE2_F                       | Zone 2 room temperature                |
+| 0x42E9    | VAR_IN_FLOW_SENSOR_CALC                   | Flow rate sensor (l/min)               |
+| 0x4426    | LVAR_IN_4426                              | Heat pump produced energy (last minute)|
+| 0x4427    | LVAR_IN_4427                              | Heat pump produced energy (total)      |
+| 0x8204    | VAR_OUT_SENSOR_AIROUT                     | Outdoor temperature                    |
+| 0x8217    | VAR_OUT_SENSOR_CT1                        | Outdoor current (Amps)                 |
+| 0x8235    | VAR_OUT_ERROR_CODE                        | Error code (0 = OK)                    |
+| 0x8413    | LVAR_OUT_CONTROL_WATTMETER_1W_1MIN_SUM    | Heat pump consumed energy (last minute)|
+| 0x8414    | LVAR_OUT_CONTROL_WATTMETER_ALL_UNIT_ACCUM | Heat pump consumed energy (total)      |
 
 Bear in mind that VAR_OUT type NASA Labels mean that you will need to assign the outdoor device to the component as it is the external heat pump unit that reports this data.
 

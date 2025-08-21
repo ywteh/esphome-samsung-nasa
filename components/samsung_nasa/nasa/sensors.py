@@ -120,12 +120,17 @@ sensors = {
         NASA_MODE: CONTROLLER_MODE_STATUS,
         CONF_DEFAULTS: sensor_defaults()
     },
+    0x4236: {
+        NASA_LABEL: "VAR_IN_TEMP_WATER_IN_F ",
+        NASA_MODE: CONTROLLER_MODE_STATUS,
+        CONF_DEFAULTS: temp_sensor_defaults()
+    },     
     0x4237: {
         NASA_LABEL: "VAR_IN_TEMP_WATER_TANK_F",
         NASA_MODE: CONTROLLER_MODE_STATUS,
         CONF_DEFAULTS: temp_sensor_defaults()
     },
-     0x4238: {
+    0x4238: {
         NASA_LABEL: "VAR_IN_TEMP_WATER_OUT_F",
         NASA_MODE: CONTROLLER_MODE_STATUS,
         CONF_DEFAULTS: temp_sensor_defaults()
@@ -150,6 +155,18 @@ sensors = {
             device_class=DEVICE_CLASS_VOLUME_FLOW_RATE,
             state_class=STATE_CLASS_MEASUREMENT,
             filters=[{CONF_MULTIPLY: 0.1}]
+        )
+    },
+    0x4426: {
+        NASA_LABEL: "LVAR_IN_4426",
+        NASA_MODE: CONTROLLER_MODE_STATUS,
+        CONF_DEFAULTS:sensor_defaults(
+            unit_of_measurement=UNIT_WATT,
+            icon=ICON_FLASH,
+            accuracy_decimals=1, 
+            device_class=DEVICE_CLASS_ENERGY,
+            state_class=STATE_CLASS_MEASUREMENT,
+            filters=[{CONF_LAMBDA: Lambda("return (int16_t)x;")}] 
         )
     },    
     0x4427: {
