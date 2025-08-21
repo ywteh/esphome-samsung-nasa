@@ -92,7 +92,7 @@ binary_sensors = {
         )
     },
     0x80D7: {
-        NASA_LABEL: "ENUM_OUT_LOAD_PHEHEATER ",
+        NASA_LABEL: "ENUM_OUT_LOAD_PHEHEATER",
         NASA_MODE: CONTROLLER_MODE_STATUS,
         CONF_DEFAULTS: binary_sensor_defaults(
             icon = ICON_HEAT,

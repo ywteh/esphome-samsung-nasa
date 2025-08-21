@@ -14,6 +14,8 @@ Most of the useful controls for DHW (domestic hot water), and heating (single an
 
 All commands, and FSVs are implemented as standard ESPHome components (e.g., numbers, selects, switches...). Check out the [example.yaml](example.yaml).
 
+**NB**: When assigning a nasa device to a samsung_nasa platform component make sure you assign the correct indoor/outdoor unit. The easiest way to check is by looking at the NASA Label information in the tables below. If the label says VAR_IN_... or ENUM_IN_... then the status is reported from the indoor unit. If the label says VAR_OUT_..., LVAR_OUT_... or ENUM_OUT..., then the status is reported from the outdoor unit.
+
 ## Basic Controller, NASA Client & Device Configuration  
 
 ```yaml
@@ -83,7 +85,7 @@ These are the only fields you need to provide. All other fields such as unit of 
 
 | NASA Code | NASA Label                        | Description                            |
 |-----------|-----------------------------------|--------------------------------------- |
-| 0x4201    | VAR_IN_TEMP_TARGET_F              | (Zone 1) Target Temperature           |
+| 0x4201    | VAR_IN_TEMP_TARGET_F              | (Zone 1) Target Temperature            |
 | 0x4206    | VAR_IN_TEMP_TARGET_ZONE2_F        | (Zone 2) Target Temperature            |
 | 0x4235    | VAR_IN_TEMP_WATER_HEATER_TARGET_F | DHW Target Temperature                 |
 | 0x4247    | VAR_IN_TEMP_WATER_OUTLET_TARGET_F | Water Outlet Target Temperature.       |
@@ -233,13 +235,27 @@ sensor:
     message: 0x4237
     nasa_device_id: nasa_device_1
     name: "DHW Temperature"
-    internal: true
     id: hot_water_current_temp
 ```
 
-In addition to a large selection of available sensors, it is also possible to specify your own NASA code should it not be listed in [sensors.py](/components/samsung_nasa/nasa/sensors.py). You will need to provide the appropriate unit of measure, device class, decimal accuracy and lambdas to transform the raw NASA value to something meaningful. Consult the [ESPHome documentation](https://esphome.io/components/sensor/) for how to configure a sensor component. As part of the samsung_nasa platform you will need to specify message, nasa_device_id, nasa_label, and platform fields.
+In addition to a large selection of available sensors, it is also possible to specify your own NASA code should it not be listed in [sensors.py](/components/samsung_nasa/nasa/sensors.py). You will need to provide the appropriate unit of measure, device class, decimal accuracy and filters to transform the raw NASA value to something meaningful. Consult the [ESPHome documentation](https://esphome.io/components/sensor/) for how to configure a sensor component. As part of the samsung_nasa platform you will need to specify message, nasa_device_id, and platform fields. If you do find a NASA code that is not available as a pre-configured component please pop it in the discussion area along with your yaml configuration for the component so that I can add it for other users.
 
-Here is the python entry that configures the above sensor:
+Here's an example of a user configured sensor:
+
+```yaml
+sensor:
+   - platform: samsung_nasa
+     message: 0x8238
+     nasa_device_id: nasa_device_2
+     device_class: frequency
+     state_class: measurement
+     unit_of_measurement: Hz
+     accuracy_decimals: 1
+     name: Compressor Frequency
+     id: compressor_frequency
+```
+
+Here is the python entry that configures the above DHW Temperature sensor:
 
 ```python
 0x4237: {
@@ -274,7 +290,7 @@ Bear in mind that VAR_OUT type NASA Labels mean that you will need to assign the
 
 ## Binary Sensor
 
-Binary sensors are read-only. They report boolean type data such as Yes/No, On/Off values etc.
+Binary sensors are read-only. They report boolean type data such as Yes/No, On/Off, Open/Closed.
 
 | NASA Code | NASA Label                        | Description                            |
 |-----------|-----------------------------------|--------------------------------------- |
@@ -286,7 +302,7 @@ Binary sensors are read-only. They report boolean type data such as Yes/No, On/O
 | 0x8019    | ENUM_OUT_LOAD_LIQUID              | Liquid Valve Status: 0 = Off; 1 = On   |
 | 0x8021    | ENUM_OUT_LOAD_EVI_BYPASS          | EVI Bypass: 0 = Off; 1 = On            |
 | 0x801A    | ENUM_OUT_LOAD_4WAY                | 4-Way Valve Status: 0 = Off; 1 = On    |
-| 0x80AF    | BASE_HEATER                       | Base Heater Status: 0 = Off; 1 = On    |
+| 0x80AF    | ENUM_OUT_LOAD_BASEHEATER          | Base Heater Status: 0 = Off; 1 = On    |
 | 0x80D7    | ENUM_OUT_LOAD_PHEHEATER           | PHE Heater Status: 0 = Off; 1 = On     |
 
 ```yaml
@@ -303,7 +319,7 @@ binary_sensor:
     id: compressor_status 
 ```
 
-Bear in mind that ENUM_OUT type NASA Labels mean that you will need to assign the outdoor device to the component. It is the outdoor (heat pump) unit that reports this data.
+Bear in mind that ENUM_OUT type NASA Labels mean that you will need to assign the outdoor device to the component. It is the outdoor (heat pump) unit that reports this data. Like sensors, binary sensors can also be user configured for NASA codes not listed above. See the Sensors section above on how to do this.
 
 ## Automation and FSVs
 

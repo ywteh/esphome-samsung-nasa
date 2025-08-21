@@ -3,6 +3,7 @@ import esphome.config_validation as cv
 from esphome.components import binary_sensor
 from esphome.const import CONF_DEFAULTS,CONF_FILTERS
 from ..nasa.nasa import NASA_BinarySensor
+from ..nasa.nasa_labels import nasa_labels
 from ..nasa.const import (
     NASA_LABEL,
     NASA_MESSAGE,
@@ -31,6 +32,8 @@ def validate(config):
                 for key, value in conf_defaults.items():
                     config[key] = value
                 config[CONF_FILTERS] = filters
+        elif NASA_LABEL not in config:
+            config[NASA_LABEL] = nasa_labels.get(config[NASA_MESSAGE], "NASA_UNKNOWN_LABEL")                
         label = "Auto" if nasa_binary_sensor else "User"
         cv._LOGGER.log(
                 cv.logging.INFO, 
