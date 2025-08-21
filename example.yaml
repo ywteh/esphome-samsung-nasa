@@ -131,6 +131,7 @@ switch:
     id: zone2_power
 
 sensor:
+  # Heating & DHW Temperatures
   - platform: samsung_nasa
     message: 0x4237
     nasa_device_id: nasa_device_1
@@ -149,62 +150,168 @@ sensor:
     name: "Zone 2 Indoor Temp"
     internal: true
     id: zone2_room_temp
-  - platform: samsung_nasa
-    message: 0x4238
-    nasa_device_id: nasa_device_1
-    name: Flow Temperature
-    id: zone_flow_temp
-  - platform: samsung_nasa
-    message: 0x4427
-    nasa_device_id: nasa_device_1
-    name: Heat Pump Produced Energy
-    # 0x408A: ENUM_IN_2WAY_VALVE
-    # On MIM board  2-way valves 
-    # are connected to Pins B9/B10,
-    # B13/B14 (switched live output)
-    #        0    1    2   3
-    #  B09  OFF  ON   OFF  ON
-    #  B10  ON   OFF  ON   OFF
-    #  B13  OFF  OFF  ON   ON
-    #. B14  ON   ON   OFF  OFF    
+
+  # Valves & Pumps
+  # 0x408A: ENUM_IN_2WAY_VALVE
+  # 3 = OFF
+  # 2 = zone 1 ON
+  # 1 = zone 2 ON 
+  # 0 = all ON
+  # On MIM board  2-way valves 
+  # are connected to Pins B9/B10,
+  # B13/B14 (switched live output)
+  #        0    1    2   3
+  #  B09  OFF  ON   OFF  ON
+  #  B10  ON   OFF  ON   OFF
+  #  B13  OFF  OFF  ON   ON
+  #. B14  ON   ON   OFF  OFF    
   - platform: samsung_nasa
     message: 0x408A
     nasa_device_id: nasa_device_1
     name: 2-Way Valve
     internal: true
     id: two_way_valve 
-    # 0x4089
-    # 0 = off; 1 =  on
+  # 0x4067
+  # 0 = room; 1 = tank
+  - platform: samsung_nasa
+    message: 0x4067
+    nasa_device_id: nasa_device_1
+    name: 3-Way Valve
+    internal: true
+    id: three_way_valve     
+  # 0x4089
+  # 0 = off; 1 =  on
   - platform: samsung_nasa
     message: 0x4089
     nasa_device_id: nasa_device_1
     name: Primary Water Pump
     internal: true
     id: primary_water_pump
-    # 0x4067
-    # 0 = room; 1 = tank
-  - platform: samsung_nasa
-    message: 0x4067
-    nasa_device_id: nasa_device_1
-    name: 3-Way Valve
-    internal: true
-    id: three_way_valve 
+
+  # Error Status
   - platform: samsung_nasa
     message: 0x8235
     nasa_device_id: nasa_device_2
     name: Error Code
+
+  # Energy
   - platform: samsung_nasa
     message: 0x8414
     nasa_device_id: nasa_device_2
-    name: "Heat Pump Cumulative Energy"
+    name: Total Consumed Energy
+    id: heat_pump_cumulative_energy
+  - platform: samsung_nasa
+    message: 0x4427
+    nasa_device_id: nasa_device_1
+    name: Total Produced Energy
+    id: heat_pump_produced_energy
   - platform: samsung_nasa
     message: 0x8413
     nasa_device_id: nasa_device_2
-    name: Heat Pump Instantaneous Power
+    name: Power Consumed last Minute
+    id: heat_consumed_last_min
+  - platform: samsung_nasa
+    message: 0x4426
+    nasa_device_id: nasa_device_1
+    name: Power Produced Last Minute
+    id: heat_generated_last_min
+
+  # Outdoor & Flow Temperatures
   - platform: samsung_nasa
     message: 0x8204
     nasa_device_id: nasa_device_2
     name: Outdoor Temperature
+  - platform: samsung_nasa
+    message: 0x42E9
+    nasa_device_id: nasa_device_1
+    name: Flow Rate Sensor
+  - platform: samsung_nasa
+    message: 0x4238
+    nasa_device_id: nasa_device_1
+    name: Flow Temp Out
+    id: zone_flow_temp
+  - platform: samsung_nasa
+    message: 0x4236
+    nasa_device_id: nasa_device_1
+    name: Flow Temp Return
+    id: zone_flow_return_temp
+
+  # Performance
+  - platform: template
+    name: COP - Total
+    icon: mdi:chart-bar
+    lambda: |-
+      return id(heat_pump_produced_energy).state /
+             id(heat_pump_cumulative_energy).state;
+    update_interval: 300s
+    accuracy_decimals: 2
+  - platform: template
+    name: COP - Instant
+    icon: mdi:chart-bar
+    state_class: measurement
+    lambda: |-
+      float x = (id(heat_generated_last_min).state /
+           id(heat_consumed_last_min).state);
+      if (x > 8) { x = 8; }
+      if (x < 0) { x = 0; }
+      return x;
+    update_interval: 10s
+    accuracy_decimals: 2
+  - platform: template
+    name: COP - Daily
+    icon: mdi:chart-bar
+    state_class: measurement
+    lambda: |-
+      float x = (id(daily_heat_generated).state /
+           id(daily_energy_consumed).state);
+      if (x > 8) { x = 8; }
+      if (x < 0) { x = 0; }
+      return x;
+    update_interval: 10s
+    accuracy_decimals: 2
+  - platform: template
+    name: "Flow Temp Delta"
+    icon: mdi:thermometer
+    id: dT
+    unit_of_measurement: °C
+    update_interval: 10s
+    lambda: |-
+      return (id(zone_flow_temp).state - (id(zone_flow_return_temp).state));
+  - platform: total_daily_energy
+    id: daily_energy_consumed
+    name: Daily Energy Consumed
+    power_id: heat_consumed_last_min
+    unit_of_measurement: 'kWh'
+    state_class: total_increasing
+    device_class: energy
+    accuracy_decimals: 3
+    filters:
+      # Multiplication factor from W to kW is 0.001
+      - multiply: 0.001
+  - platform: total_daily_energy
+    id: daily_heat_generated
+    name: Daily Heat Generated
+    power_id: heat_generated_last_min
+    unit_of_measurement: 'kWh'
+    state_class: total_increasing
+    device_class: energy
+    accuracy_decimals: 3
+    filters:
+      # Multiplication factor from W to kW is 0.001
+      - multiply: 0.001
+
+# Enable time component to reset energy at midnight
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+    timezone: "Europe/London"
+
+binary_sensor:
+  - platform: samsung_nasa
+    message: 0x8010
+    nasa_device_id: nasa_device_2
+    name: Compressor Status
+    id: compressor_status 
 
 climate:
   - platform: samsung_nasa
