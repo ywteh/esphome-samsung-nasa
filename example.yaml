@@ -1,5 +1,4 @@
-# Import custom component from GitHub
-# Import custom components...
+# Import external component from GitHub
 external_components:
   - source: github://beormund/esphome-samsung-nasa@main
     components: [samsung_nasa]
@@ -7,10 +6,16 @@ external_components:
 esphome:
   name: samsung_nasa
   friendly_name: Heat Pump
-  min_version: 2025.7.0
+  min_version: 2025.8.0
 
 esp32:
   board: m5stack-atom
+  framework:
+    # Arduino framework has faster compilation but 
+    # uses more RAM and Flash; ESP-IDF framework has 
+    # slower compilation but uses less RAM and FLash
+    type: esp-idf
+    # type: arduino
 
 # Enable logging
 logger:
@@ -25,9 +30,6 @@ ota:
   - platform: web_server
   - platform: esphome
 
-# Allow provisioning Wi-Fi via serial
-improv_serial:
-
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password
@@ -38,14 +40,14 @@ wifi:
 # to provision wifi credentials to the device via WiFi AP.
 captive_portal:
 
-# To have a "next url" for improv serial
+# This creates a HA style local web page 
 web_server:
   port: 80
   version: 3
   log: true
   local: true
 
-# Specify pins used by the board to comunicate with RS485 board - in this case M5STACK
+# Specify pins used by the board to comunicate over RS485
 uart:
   tx_pin: GPIO19
   rx_pin: GPIO22

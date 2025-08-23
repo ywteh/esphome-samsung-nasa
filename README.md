@@ -16,6 +16,26 @@ All commands, and FSVs are implemented as standard ESPHome components (e.g., num
 
 **NB**: When assigning a nasa device to a samsung_nasa platform component make sure you assign the correct indoor/outdoor unit. The easiest way to check is by looking at the NASA Label information in the tables below. If the label says VAR_IN_... or ENUM_IN_... then the status is reported from the indoor unit. If the label says VAR_OUT_..., LVAR_OUT_... or ENUM_OUT..., then the status is reported from the outdoor unit.
 
+## Compilation Using Arduino or ESP-IDF
+
+Using the Arduino framework will result in faster compilation time but less efficient RAM usage and larger firmware size.
+
+```yaml
+esp32:
+  board: m5stack-atom
+  framework:
+    type: arduino
+```
+
+Using the ESP-IDF framework will result in slower compilation time but smaller firmware size and more efficient RAM usage. From ESPHome 2026.1 onwards the default framework will be esp-idf (unless arduino is specified).
+
+```yaml
+esp32:
+  board: m5stack-atom
+  framework:
+    type: esp-idf
+```
+
 ## Basic Controller, NASA Client & Device Configuration  
 
 ```yaml
