@@ -470,6 +470,58 @@ select:
     name: Hot Water Mode
     id: hotwater_mode
 ```
+## What if My System Uses 3rd Party Thermostats?
+
+Whilst you won't be able to use the samsung_nasa platform climate control you can still turn the heating zone on/off and report whether or not 3rd party thermostats are calling for heat. Note that when your heat pump is configured to use 3rd party thermostats to control heating zone valves (rather than the Samsung wired controller acting as thermostat with zone control enabled) the MIM control board will not use pins B9/B10, B13/B14 (switched live output for zone valve control). Instead try something like this:
+
+```yaml
+switch:
+  # Turn Heating Zone On/Off
+  - platform: samsung_nasa
+    message: 0x4000
+    nasa_device_id: nasa_device_1
+    name: "Zone Power"
+binary_sensor:
+  - platform: template
+    name: "Zone Running"
+    id: heating_running
+text_sensor:
+  - platform: template
+    name: "Zone Action"
+    id: heating_action
+sensor:
+    # 0x4069: ENUM_IN_THERMOSTAT1
+    # On MIM control board 3rd party thermostats 
+    # are connected to Pin B22 which is a command 
+    # signal input (Command Signal Zone 1 Heating)
+    # 0 = Off, 1 = Cool, 2 = Heat
+    # If Off then Action = Idle
+    # If Heat then Action = Heating
+  - platform: samsung_nasa
+    id: zone_heating
+    message: 0x4069
+    nasa_device_id: nasa_device_1
+    state_class: measurement
+    on_value:
+        then:
+            - if:
+                condition:
+                    lambda: "return x == 0;"
+                then:
+                    - binary_sensor.template.publish:
+                        id: heating_running
+                        state: OFF
+                    - text_sensor.template.publish:
+                        id: heating_action
+                        state: "Idle"
+                else:
+                    - binary_sensor.template.publish:
+                        id: heating_running
+                        state: ON
+                    - text_sensor.template.publish:
+                        id: heating_action
+                        state: "Heating"
+```
 
 An example heat pump dashboard in Home Assistant using this component and the example.yaml.
 
