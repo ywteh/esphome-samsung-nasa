@@ -542,6 +542,10 @@ When a command is issued and successfully actioned by the heat pump, the heat pu
 
 A batched dispatcher is used for outgoing read requests - this automatically combines up to 10 read requests into a single payload and these batches are issued with a small delay betweeen each dispatch as a means of congestion control. There is also an outgoing queue which writes to the bus when the bus is "quiet" i.e. not currently receiving data. These two approaches combined together should hopefully minimise traffic and help reduce collisions.
 
+## NASA Protocol & List of Codes
+
+The protocol and list of codes are available [here](samsung_nasa_protocol.md) courtesy of [@larrykluger](https://github.com/larrykluger).
+
 ## Acknowledgments
 
 @Ianwin for founding the samsung HVAC Bus project; 
