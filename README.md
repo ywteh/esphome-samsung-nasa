@@ -530,6 +530,101 @@ sensor:
                         state: "Heating"
 ```
 
+## COP (Coefficient of Performance)
+
+The COP of a heat pump is a measure of its efficiency, specifically how much heat it can produce for a given amount of electricial energy input. A higher COP indicates a more efficient heat pump. For example, if a heat pump has a COP of 3, it means that for every 1 unit of electrical energy it consumes, it delivers 3 units of heat.
+
+Using sensors 0x8414 (total consumed energy) and 0x4427 (total produced energy) it is possible to do a crude calculation of the overall COP of your heat pump:
+
+```yaml
+# Assuming the 0x8414 sensor has an id of heat_pump_cumulative_energy
+# Assuming the 0x4427 sensor has an id of heat_pump_produced_energy
+sensor:
+  - platform: template
+    name: COP - Total
+    icon: mdi:chart-bar
+    lambda: |-
+      return id(heat_pump_produced_energy).state /
+             id(heat_pump_cumulative_energy).state;
+    update_interval: 300s
+    accuracy_decimals: 2
+```
+
+To calculate the COP minute by minute (bear in mind this will only be meaningful when the heat pump is running):
+
+```yaml
+# Assuming the 0x4426 sensor has an id of heat_generated_last_min
+# Assuming the 0x8413 sensor has an id of heat_consumed_last_min
+sensor:
+  - platform: template
+    name: COP - Instant
+    icon: mdi:chart-bar
+    state_class: measurement
+    lambda: |-
+      float x = (id(heat_generated_last_min).state /
+           id(heat_consumed_last_min).state);
+      if (x > 8) { x = 8; }
+      if (x < 0) { x = 0; }
+      return x;
+    update_interval: 10s
+    accuracy_decimals: 2
+```
+
+Calculating daily COP takes a little more work. First, create two sensors using ESPHome's total_daily_energy platform. For the power_id fields use the heat_consumed_last_min (sensor 0x8413) and head_generated_last_min (sensor 0x4426) sensors from the example above.
+
+```yaml
+sensor:
+  - platform: total_daily_energy
+    id: daily_energy_consumed
+    name: Daily Energy Consumed
+    power_id: heat_consumed_last_min
+    unit_of_measurement: 'kWh'
+    state_class: total_increasing
+    device_class: energy
+    accuracy_decimals: 3
+    filters:
+      # Multiplication factor from W to kW is 0.001
+      - multiply: 0.001
+  - platform: total_daily_energy
+    id: daily_heat_generated
+    name: Daily Heat Generated
+    power_id: heat_generated_last_min
+    unit_of_measurement: 'kWh'
+    state_class: total_increasing
+    device_class: energy
+    accuracy_decimals: 3
+    filters:
+      # Multiplication factor from W to kW is 0.001
+      - multiply: 0.001
+```
+Finally, use these two total_daily_energy sensors in a template sensor:
+
+```yaml
+  - platform: template
+    name: COP - Daily
+    icon: mdi:chart-bar
+    state_class: measurement
+    lambda: |-
+      float x = (id(daily_heat_generated).state /
+           id(daily_energy_consumed).state);
+      if (x > 8) { x = 8; }
+      if (x < 0) { x = 0; }
+      return x;
+```
+To have the daily COP sensor reset each day you will need a time component (sntp, home assistant etc). Dont' forget to set your [timezone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) (Region/City). 
+
+```yaml
+# Enable time component to reset energy at midnight
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+    timezone: "Europe/London"
+```
+
+Thanks to [@mergwyn](https://github.com/mergwyn) for providing these examples.
+
+## Home Assistant
+
 An example heat pump dashboard in Home Assistant using this component and the example.yaml.
 
 <img src="samsung_nasa.png" width="100%"/>
