@@ -6,6 +6,7 @@
 #include "../select/nasa_select.h"
 #include "esphome/core/component.h"
 #include "esphome/components/climate/climate.h"
+#include "esphome/components/sensor/sensor.h"
 #include <set>
 
 namespace esphome {
@@ -31,7 +32,7 @@ class NASA_Climate : public climate::Climate, public Component {
   void set_power_switch(NASA_Switch *power) { this->power_ = power; };
   void set_target_temp(NASA_Number *target_temp) { this->target_temp_ = target_temp; };
   void set_current_temp(NASA_Sensor *current_temp) { this->current_temp_ = current_temp; }
-  void set_action_sensor(NASA_Sensor *action_sens) { this->action_sens_ = action_sens; }
+  void set_action_sensor(sensor::Sensor *action_sens) { this->action_sens_ = action_sens; }
   void set_action_map(ClimateActionMap *mappings) { this->mappings_ = mappings; }
   void set_custom_preset_select(NASA_Select *custom_presets) { this->custom_presets_ = custom_presets; }
   bool update_action(climate::ClimateAction new_action);
@@ -53,7 +54,7 @@ class NASA_Climate : public climate::Climate, public Component {
   NASA_Switch *power_{nullptr};
   NASA_Number *target_temp_{nullptr};
   NASA_Sensor *current_temp_{nullptr};
-  NASA_Sensor *action_sens_{nullptr};
+  sensor::Sensor *action_sens_{nullptr};
   NASA_Select *custom_presets_{nullptr};
   ClimateActionMap *mappings_{nullptr};
 };

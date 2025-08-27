@@ -145,9 +145,6 @@ void NASA_Client::process_nasa_packet() {
   const auto me = Address::get_my_address().to_string();
   // Invoke the address callback
   this->addressFunc_(source);
-  if (debug_log_undefined_messages) {
-    this->packet_.log_multiline(std::string("Message"), log_lines_func);
-  }
   switch (this->packet_.command.dataType) {
     case DataType::Undefined: {
       return;

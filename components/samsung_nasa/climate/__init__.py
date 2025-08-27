@@ -1,7 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 import esphome.automation as automation
-from esphome.components import climate
+from esphome.components import climate, sensor
 from esphome.const import (
     CONF_ID,
     CONF_ICON,
@@ -60,7 +60,7 @@ def validate_mapping(config):
 
 CLIMATE_ACTION_MAPPING_SCHEMA = cv.Schema(
     {
-         cv.Required(CONF_ID): cv.use_id(NASA_Sensor),
+         cv.Required(CONF_ID): cv.use_id(sensor.Sensor),
          cv.GenerateID(CLIMATE_ACTION_MAPPINGS_ID): cv.declare_id(ClimateActionMap),
          cv.Required(CLIMATE_ACTION_MAPPINGS): validate_mapping
     }
