@@ -40,6 +40,12 @@ switches = {
         CONF_DATA: empty_data(),
         CONF_DEFAULTS: bool_defaults()
     },
+    0x406D: {
+        NASA_LABEL: "ENUM_IN_OUTING_MODE",
+        NASA_MODE: CONTROLLER_MODE_CONTROL,
+        CONF_DATA: empty_data(),
+        CONF_DEFAULTS: bool_defaults()
+    },
     0x411E: {
         NASA_LABEL: "ENUM_IN_OPERATION_POWER_ZONE2",
         NASA_MODE: CONTROLLER_MODE_CONTROL,
