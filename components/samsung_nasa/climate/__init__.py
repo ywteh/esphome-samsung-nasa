@@ -1,7 +1,13 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 import esphome.automation as automation
-from esphome.components import climate, sensor
+from esphome.components import (
+    climate, 
+    sensor, 
+    select,
+    number,
+    switch
+)
 from esphome.const import (
     CONF_ID,
     CONF_ICON,
@@ -9,11 +15,7 @@ from esphome.const import (
 )
 from ..nasa.nasa import  (
     samsung_nasa_ns,
-    NASA_Climate,
-    NASA_Switch,
-    NASA_Sensor,
-    NASA_Number,
-    NASA_Select
+    NASA_Climate
 )
 
 CODEOWNERS = ["Beormund"]
@@ -71,11 +73,11 @@ CONFIG_SCHEMA = cv.Schema(
     .extend(
         {  
             cv.Optional(CONF_ICON, default=ICON_THERMOSTAT): cv.icon,
-            cv.Optional(CLIMATE_POWER_SWITCH_ID): cv.use_id(NASA_Switch),
-            cv.Optional(CLIMATE_CURRENT_TEMP_ID): cv.use_id(NASA_Sensor),
-            cv.Optional(CLIMATE_TARGET_TEMP_ID): cv.use_id(NASA_Number),
+            cv.Optional(CLIMATE_POWER_SWITCH_ID): cv.use_id(switch.Switch),
+            cv.Optional(CLIMATE_CURRENT_TEMP_ID): cv.use_id(sensor.Sensor),
+            cv.Optional(CLIMATE_TARGET_TEMP_ID): cv.use_id(number.Number),
             cv.Optional(CLIMATE_ACTION_SENSOR): CLIMATE_ACTION_MAPPING_SCHEMA,
-            cv.Optional(CLIMATE_CUSTOM_PRESET_SELECT_ID): cv.use_id(NASA_Select)
+            cv.Optional(CLIMATE_CUSTOM_PRESET_SELECT_ID): cv.use_id(select.Select)
         }
     )
 )

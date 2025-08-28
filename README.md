@@ -467,8 +467,14 @@ climate:
         1: CLIMATE_ACTION_HEATING
 ```
 
-Finally you populate the climate component's presets from a select component. In this example the NASA code 0x4066, which is implemented as a select component, is bound to the climate's custom_preset_select_id field.
+Use the mappings field to map sensor values to climate action modes. Available climate action modes are:
 
+* CLIMATE_ACTION_OFF  
+* CLIMATE_ACTION_COOLING  
+* CLIMATE_ACTION_HEATING  
+* CLIMATE_ACTION_IDLE  
+
+Finally you populate the climate component's presets from a select component. In this example the NASA code 0x4066, which is implemented as a select component, is bound to the climate's custom_preset_select_id field.
 
 ```yaml
 select:

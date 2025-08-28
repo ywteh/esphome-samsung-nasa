@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../switch/nasa_switch.h"
-#include "../number/nasa_number.h"
-#include "../sensor/nasa_sensor.h"
-#include "../select/nasa_select.h"
 #include "esphome/core/component.h"
 #include "esphome/components/climate/climate.h"
 #include "esphome/components/sensor/sensor.h"
+#include "esphome/components/select/select.h"
+#include "esphome/components/number/number.h"
+#include "esphome/components/switch/switch.h"
+#include <map>
 #include <set>
 
 namespace esphome {
@@ -29,12 +29,12 @@ class NASA_Climate : public climate::Climate, public Component {
  public:
   void setup() override;
   climate::ClimateCall make_call() { return climate::ClimateCall(this); }
-  void set_power_switch(NASA_Switch *power) { this->power_ = power; };
-  void set_target_temp(NASA_Number *target_temp) { this->target_temp_ = target_temp; };
-  void set_current_temp(NASA_Sensor *current_temp) { this->current_temp_ = current_temp; }
+  void set_power_switch(switch_::Switch *power) { this->power_ = power; };
+  void set_target_temp(number::Number *target_temp) { this->target_temp_ = target_temp; };
+  void set_current_temp(sensor::Sensor *current_temp) { this->current_temp_ = current_temp; }
   void set_action_sensor(sensor::Sensor *action_sens) { this->action_sens_ = action_sens; }
   void set_action_map(ClimateActionMap *mappings) { this->mappings_ = mappings; }
-  void set_custom_preset_select(NASA_Select *custom_presets) { this->custom_presets_ = custom_presets; }
+  void set_custom_preset_select(select::Select *custom_presets) { this->custom_presets_ = custom_presets; }
   bool update_action(climate::ClimateAction new_action);
 
  protected:
@@ -51,11 +51,11 @@ class NASA_Climate : public climate::Climate, public Component {
   bool update_custom_preset(std::string new_value);
   climate::ClimateTraits traits() override;
 
-  NASA_Switch *power_{nullptr};
-  NASA_Number *target_temp_{nullptr};
-  NASA_Sensor *current_temp_{nullptr};
+  switch_::Switch *power_{nullptr};
+  number::Number *target_temp_{nullptr};
+  sensor::Sensor *current_temp_{nullptr};
   sensor::Sensor *action_sens_{nullptr};
-  NASA_Select *custom_presets_{nullptr};
+  select::Select *custom_presets_{nullptr};
   ClimateActionMap *mappings_{nullptr};
 };
 
