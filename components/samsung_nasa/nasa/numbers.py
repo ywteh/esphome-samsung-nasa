@@ -113,7 +113,6 @@ numbers = {
         CONF_DATA: cmd_numeric_data(-5, 5),
         CONF_DEFAULTS: temperature_defaults()
     },
- 
     0x424A: {
         NASA_LABEL: "VAR_IN_FSV_1011",
         NASA_MODE: CONTROLLER_MODE_FSV,
